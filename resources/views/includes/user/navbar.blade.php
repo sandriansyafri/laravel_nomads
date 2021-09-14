@@ -41,18 +41,37 @@
           </li>
         </ul>
 
-        <!-- Mobile button -->
+       @guest
+            <!-- Mobile button -->
         <form class="form-inline d-sm-block d-md-none">
-          <button class="btn btn-login my-2 my-sm-0">
+          <a href="{{ route('login') }}" class="d-flex align-items-center btn btn-login my-2 my-sm-0">
             Masuk
-          </button>
+          </a>
         </form>
         <!-- Desktop Button -->
         <form class="form-inline my-2 my-lg-0 d-none d-md-block">
-          <button class="btn btn-login btn-navbar-right my-2 my-sm-0 px-4">
+          <a href="{{ route('login') }}" class="d-flex align-items-center btn btn-login btn-navbar-right my-2 my-sm-0 px-4">
             Masuk
+          </a>
+        </form>
+       @endguest
+
+       @auth
+            <!-- Mobile button -->
+        <form class="form-inline d-sm-block d-md-none" action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn btn-login my-2 my-sm-0">
+            Logout
           </button>
         </form>
+        <!-- Desktop Button -->
+        <form class="form-inline my-2 my-lg-0 d-none d-md-block" action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn btn-login btn-navbar-right my-2 my-sm-0 px-4">
+            Logout
+          </button>
+        </form>
+       @endauth
       </div>
     </nav>
   </div>
