@@ -1,11 +1,13 @@
 @extends('layouts.app')
 @section('title','Detail')
 
+
 @push('css')
 <link rel="stylesheet" href="{{ asset('frontend') }}/libraries/xzoom/dist/xzoom.css" />
 @endpush
 @section('content')
 <main>
+  
     <section class="section-details-header"></section>
     <section class="section-details-content">
       <div class="container">

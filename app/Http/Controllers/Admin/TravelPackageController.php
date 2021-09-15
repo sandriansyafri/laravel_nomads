@@ -17,7 +17,7 @@ class TravelPackageController extends Controller
      */
     public function index()
     {
-        $travel_packages = TravelPackage::all();
+        $travel_packages = TravelPackage::with('gallery')->get();
         return view('pages.travel-packages.index', compact('travel_packages'));
     }
 

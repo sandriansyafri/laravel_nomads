@@ -15,7 +15,7 @@ class CreateTransactionDetails extends Migration
     {
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained('transactions', 'id');
+            $table->foreignId('transaction_id')->constrained('transactions', 'id')->onDelete('cascade');
             $table->string('username');
             $table->string('nationality');
             $table->boolean('is_visa');

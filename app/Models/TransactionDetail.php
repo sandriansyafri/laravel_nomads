@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class TransactionDetail extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    public function travel_package()
+    public function transaction()
     {
-        return $this->belongsTo(TravelPackage::class, 'travel_package_id', 'id');
+        return  $this->belongsTo(Transaction::class, 'transaction_id', 'id');
     }
 }

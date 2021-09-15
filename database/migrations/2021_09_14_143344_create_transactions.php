@@ -19,7 +19,7 @@ class CreateTransactions extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users', 'id');
             $table->integer('addtional_visa');
             $table->integer('transaction_total');
-            $table->integer('transaction_status');
+            $table->enum('transaction_status', ['IN_CART', 'PENDING', 'SUCCESS', 'CANCEL', 'FAILED']);
             $table->softDeletes();
             $table->timestamps();
         });

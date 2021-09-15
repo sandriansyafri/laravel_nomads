@@ -31,6 +31,12 @@
             <span>Galleries</span></a>
     </li>
 
+    <li class="nav-item {{ request()->is('admin/transactions*') ? 'active' : '' }}">
+        <a class="nav-link " href="{{ route('transactions.index') }}">
+            <i class="fa fa-dollar-sign"></i>
+            <span>Transaction</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
