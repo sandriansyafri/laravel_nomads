@@ -25,6 +25,12 @@
             <span>Travel Package</span></a>
     </li>
 
+    <li class="nav-item {{ request()->is('admin/galleries*') ? 'active' : '' }}">
+        <a class="nav-link " href="{{ route('galleries.index') }}">
+            <i class="fas fa-image"></i>
+            <span>Galleries</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
