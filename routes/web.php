@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TravelPackageController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DetailController;
 use App\Http\Controllers\HomeController;
@@ -19,11 +20,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('admin')
-    ->namespace('Admin')
     ->middleware(['auth', 'admin'])
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('travel-packages', TravelPackageController::class);
     });
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/detail', [DetailController::class, 'index'])->name('detail');
