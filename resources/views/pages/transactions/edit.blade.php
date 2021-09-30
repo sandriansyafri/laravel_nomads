@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title','Create Gallery')
+@section('title','Edit Transaction')
 
 @section('content')
 <div class="container-fluid">
@@ -10,7 +10,7 @@
         <div class="col">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Form Create Travel Package</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Form Edit Tranasction</h6>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('transactions.update',$transaction->id) }}" method="POST">
