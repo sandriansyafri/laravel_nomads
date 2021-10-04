@@ -10,6 +10,7 @@ class TravelPackage extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $with = ['gallery'];
 
     public function gallery()
     {

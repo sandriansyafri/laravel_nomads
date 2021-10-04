@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TravelPackage;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('pages.user.home');
+        $travel_packages = TravelPackage::with(['gallery'])->get();
+        return view('pages.user.home', compact(['travel_packages']));
     }
 }

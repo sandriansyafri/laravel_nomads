@@ -28,55 +28,48 @@
         <div class="row">
           <div class="col-lg-8 pl-lg-0">
             <div class="card card-details">
-              <h1>Nusa Peninda</h1>
+              <h1>{{ $travel_package->title }}</h1>
               <p>
-                Republic of Indonesia Raya
+               {{$travel_package->location}}
               </p>
               <div class="gallery">
+                @if ($travel_package->gallery->count())
                 <div class="xzoom-container">
-                  <img class="xzoom" id="xzoom-default" src="{{ asset('frontend') }}/images/details-1.jpg" xoriginal="frontend/images/details-1.jpg" style="width: 100%;">
+                  <img class="xzoom" id="xzoom-default" src="{{ Storage::url($travel_package->gallery->first()->image) }}" xoriginal="{{ Storage::url($travel_package->gallery->first()->image) }}" style="width: 100%;">
                   <div class="xzoom-thumbs">
-                    <a href="{{ asset('frontend') }}/images/details-1.jpg"><img class="xzoom-gallery xactive" width="128" src="{{ asset('frontend') }}/images/details-1.jpg" xpreview="frontend/images/details-1.jpg"></a>
-                    <a href="{{ asset('frontend') }}/images/details-1.jpg"><img class="xzoom-gallery" width="128" src="{{ asset('frontend') }}/images/details-1.jpg" xpreview="frontend/images/details-1.jpg"></a>
-                    <a href="{{ asset('frontend') }}/images/details-1.jpg"><img class="xzoom-gallery" width="128" src="{{ asset('frontend') }}/images/details-1.jpg" xpreview="frontend/images/details-1.jpg"></a>
-                    <a href="{{ asset('frontend') }}/images/details-1.jpg"><img class="xzoom-gallery" width="128" src="{{ asset('frontend') }}/images/details-1.jpg" xpreview="frontend/images/details-1.jpg"></a>
-                    <a href="{{ asset('frontend') }}/images/details-1.jpg"><img class="xzoom-gallery" width="128" src="{{ asset('frontend') }}/images/details-1.jpg" xpreview="frontend/images/details-1.jpg"></a>
+                    @foreach ($travel_package->gallery as $gallery)
+                    <a href="{{ Storage::url($gallery->image) }}">
+                      <img class="xzoom-gallery xactive" width="128" src="{{ Storage::url($gallery->image) }}" xpreview="{{ Storage::url($gallery->image) }}">
+                    </a>
+                    @endforeach
                   </div>
                 </div>
+                @endif
                 <h2>Tentang Wisata</h2>
                 <p>
-                  Nusa Penida is an island southeast of Indonesia’s island
-                  Bali and a district of Klungkung Regency that includes the
-                  neighbouring small island of Nusa Lembongan. The Badung
-                  Strait separates the island and Bali. The interior of Nusa
-                  Penida is hilly with a maximum altitude of 524 metres. It is
-                  drier than the nearby island of Bali.
+                 {{$travel_package->about}}
                 </p>
-                <p>
-                  Bali and a district of Klungkung Regency that includes the
-                  neighbouring small island of Nusa Lembongan. The Badung
-                  Strait separates the island and Bali.
-                </p>
+            
                 <div class="features row pt-3">
                   <div class="col-md-4">
                     <img src="{{ asset('frontend') }}/images/ic_event.png" alt="" class="features-image">
                     <div class="description">
                       <h3>Featured Ticket</h3>
-                      <p>Tari Kecak</p>
+                      <p>{{ $travel_package->featured_event }}</p>
                     </div>
                   </div>
                   <div class="col-md-4 border-left">
                     <img src="{{ asset('frontend') }}/images/ic_bahasa.png" alt="" class="features-image">
                     <div class="description">
                       <h3>Language</h3>
-                      <p>Bahasa Indonesia</p>
+                      <p>{{ $travel_package->language }}</p>
                     </div>
                   </div>
                   <div class="col-md-4 border-left">
                     <img src="{{ asset('frontend') }}/images/ic_foods.png" alt="" class="features-image">
                     <div class="description">
                       <h3>Foods</h3>
-                      <p>Local Foods</p>
+                      <p>{{ $travel_package->foods }}</p>
                     </div>
                   </div>
                 </div>
@@ -94,24 +87,32 @@
               <table class="trip-informations">
                 <tbody><tr>
                   <th width="50%">Date of Departure</th>
-                  <td width="50%" class="text-right">22 Aug, 2019</td>
+                  <td width="50%" class="text-right">{{ \Carbon\Carbon::create($travel_package->depature_date)->format('F n, Y') }}</td>
                 </tr>
                 <tr>
                   <th width="50%">Duration</th>
-                  <td width="50%" class="text-right">4D 3N</td>
+                  <td width="50%" class="text-right">{{ $travel_package->duration }}</td>
                 </tr>
                 <tr>
                   <th width="50%">Type</th>
-                  <td width="50%" class="text-right">Open Trip</td>
+                  <td width="50%" class="text-right">{{ $travel_package->type }}</td>
                 </tr>
                 <tr>
                   <th width="50%">Price</th>
-                  <td width="50%" class="text-right">$80,00 / person</td>
+                  <td width="50%" class="text-right">${{ $travel_package->price }} / person</td>
                 </tr>
               </tbody></table>
             </div>
             <div class="join-container">
-              <a href="{{ route('checkout') }}" class="btn btn-block btn-join-now mt-3 py-2">Join Now</a>
+              @guest
+              <a href="{{ route('login') }}" class="btn  btn-block btn-join-now mt-3 py-2">Login / Register to Join Trip</a>
+              @endguest
+              @auth
+              <form action="{{ route('checkout-process',$travel_package->slug) }}" method="post">
+                @csrf
+                <button type="submit" class="btn  btn-block btn-join-now mt-3 py-2">Join Now</button>
+              </form>
+              @endauth
             </div>
           </div>
         </div>

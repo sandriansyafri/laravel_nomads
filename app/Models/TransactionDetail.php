@@ -10,6 +10,7 @@ class TransactionDetail extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $with = ['transaction'];
 
     public function transaction()
     {

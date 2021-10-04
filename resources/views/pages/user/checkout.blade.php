@@ -33,7 +33,7 @@
           <div class="card card-details mb-3">
             <h1>Who is Going?</h1>
             <p>
-              Trip to Ubud, Bali, Indonesia
+              Trip to {{ $transaction->travel_package->title }}, {{ $transaction->travel_package->location }}
             </p>
             <div class="attendee">
               <table class="table table-responsive-sm text-center">
@@ -48,53 +48,51 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <img src="{{ asset('frontend') }}/images/avatar-4.png" alt="" height="60">
-                    </td>
-                    <td class="align-middle">Angga Risky</td>
-                    <td class="align-middle">CN</td>
-                    <td class="align-middle">N/A</td>
-                    <td class="align-middle">Active</td>
-                    <td class="align-middle">
-                      <a href="#">
+                 @foreach ($transaction->transaction_detail as $transaction_detail)
+                 <tr>
+                  <td>
+                    <img src="https://ui-avatars.com/api/?name={{ $transaction_detail->username }}" alt="" height="60" class="rounded-circle">
+                  </td>
+                  <td class="align-middle">{{ $transaction_detail->username }}</td>
+                  <td class="align-middle">{{ $transaction_detail->nationality }}</td>
+                  <td class="align-middle">{{ $transaction_detail->is_visa ? '30Day' : 'N/A' }}</td>
+                  <td class="align-middle">
+                    {{ 
+                      \Carbon\Carbon::createFromDate($transaction_detail->doe_passport) > 
+                      \Carbon\Carbon::now() ? 'Active' : 'In Active'
+                      }}
+                  </td>
+                  <td class="align-middle">
+                    <form action="{{ route('checkout-remove',$transaction_detail->id) }}" class="d-inline-block" method="POST">
+                      @csrf
+                      <button type="submit" class="btn" >
                         <img src="{{ asset('frontend') }}/images/ic_remove.png" alt="">
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="{{ asset('frontend') }}/images/avatar-5.png" alt="" height="60">
-                    </td>
-                    <td class="align-middle">Galih Pratama</td>
-                    <td class="align-middle">SG</td>
-                    <td class="align-middle">30 Days</td>
-                    <td class="align-middle">Active</td>
-                    <td class="align-middle">
-                      <a href="#">
-                        <img src="{{ asset('frontend') }}/images/ic_remove.png" alt="">
-                      </a>
-                    </td>
-                  </tr>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                 @endforeach
+              
                 </tbody>
               </table>
             </div>
             <div class="member mt-3">
               <h2>Add Member</h2>
-              <form class="form-inline">
+              <form class="form-inline" action="{{ route('checkout-create',$transaction->id) }}" method="POST">
+                @csrf
                 <label class="sr-only" for="inputUsername">Name</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="inputUsername" placeholder="Username">
+                <input type="text" class="form-control mb-2 mr-sm-2" id="inputUsername" placeholder="Username" name="username">
 
                 <label class="sr-only" for="inlineFormCustomSelectPref">Preference</label>
-                <select class="custom-select mb-2 mr-sm-2" id="inlineFormCustomSelectPref">
+                <select name="is_visa" class="custom-select mb-2 mr-sm-2" id="inlineFormCustomSelectPref">
                   <option selected="" value="">VISA</option>
-                  <option value="2">30 Days</option>
-                  <option value="3">N/A</option>
+                  <option value="1">30 Days</option>
+                  <option value="0">N/A</option>
                 </select>
 
                 <label class="sr-only" for="doePassport">DOE Passport</label>
                 <div class="input-group mb-2 mr-sm-2">
-                  <input id="datepicker" width="276" />
+                  <input name="doe_passport" id="datepicker" width="276" />
                 </div>
 
                 <button type="submit" class="btn btn-add-now mb-2 px-4">
@@ -115,24 +113,34 @@
             <table class="trip-informations">
               <tbody><tr>
                 <th width="50%">Members</th>
-                <td width="50%" class="text-right">2 person</td>
+                <td width="50%" class="text-right">{{ $transaction->transaction_detail->count() }} person</td>
               </tr>
               <tr>
                 <th width="50%">Additional Visa</th>
-                <td width="50%" class="text-right">$ 190,00</td>
+                <td width="50%" class="text-right">$ {{ $transaction->addtional_visa }}</td>
               </tr>
               <tr>
                 <th width="50%">Trip Price</th>
-                <td width="50%" class="text-right">$ 80,00 / person</td>
+                @if ($transaction->transaction_detail->count())
+                <td width="50%" class="text-right">$ {{ $transaction->travel_package->price }} / person</td>
+                @else 
+                <td width="50%" class="text-right">-</td>
+              @endif
+              
               </tr>
               <tr>
                 <th width="50%">Sub Total</th>
-                <td width="50%" class="text-right">$ 280,00</td>
+                <td width="50%" class="text-right">$ {{ $transaction->transaction_total }}</td>
               </tr>
               <tr>
                 <th width="50%">Total (+Unique)</th>
                 <td width="50%" class="text-right text-total">
-                  <span class="text-blue">$ 279,</span><span class="text-orange">33</span>
+                  <span class="text-blue">$ {{ $transaction->transaction_total }}</span>
+                  <span class="text-orange">
+                    @if ($transaction->transaction_detail->count())
+                      , {{ mt_rand(0,99) }}
+                    @endif
+                  </span>
                 </td>
               </tr>
             </tbody></table>
@@ -171,10 +179,16 @@
             </div>
           </div>
           <div class="join-container">
-            <a href="{{ route('checkout-success') }}" class="btn btn-block btn-join-now mt-3 py-2">I Have Made Payment</a>
+            <form action="{{ route('checkout-success',$transaction->id) }}" method="post">
+              @csrf
+              <button type="submit" class="btn btn-block btn-join-now mt-3 py-2">I Have Made Payment</button>
+            </form>
           </div>
           <div class="text-center mt-3">
-            <a href="{{ route('detail') }}" class="text-muted">Cancel Booking</a>
+            <form action="{{ route('checkout-failed',$transaction->id) }}" method="post">
+              @csrf
+            <button type="submit"  class="btn text-muted">Cancel Booking</button>
+            </form>
           </div>
         </div>
       </div>
