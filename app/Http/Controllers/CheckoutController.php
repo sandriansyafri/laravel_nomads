@@ -13,23 +13,32 @@ class CheckoutController extends Controller
 {
     public function process(TravelPackage $travel_package)
     {
-        $transaction = Transaction::create([
-            'travel_package_id' => $travel_package->id,
-            'user_id' => Auth::user()->id,
-            'addtional_visa' => 0,
-            'transaction_total' => $travel_package->price,
-            'transaction_status' => 'IN_CART'
-        ]);
 
-        TransactionDetail::create([
-            'transaction_id' => $transaction->id,
-            'username' => Auth::user()->username,
-            'nationality' => 'ID',
-            'is_visa' => false,
-            'doe_passport' => Carbon::now()->addYear(5)
-        ]);
+        $validation = Transaction::where('transaction_status', 'IN_CART')
+            ->where('user_id', Auth::user()->id)
+            ->get();
 
-        return redirect()->route('checkout', $transaction->id);
+        if ($validation->isEmpty()) {
+            $transaction = Transaction::create([
+                'travel_package_id' => $travel_package->id,
+                'user_id' => Auth::user()->id,
+                'addtional_visa' => 0,
+                'transaction_total' => $travel_package->price,
+                'transaction_status' => 'IN_CART'
+            ]);
+
+            TransactionDetail::create([
+                'transaction_id' => $transaction->id,
+                'username' => Auth::user()->username,
+                'nationality' => 'ID',
+                'is_visa' => false,
+                'doe_passport' => Carbon::now()->addYear(5)
+            ]);
+
+            return redirect()->route('checkout', $transaction->id);
+        } else {
+            return redirect()->route('checkout', $validation[0]->id);
+        }
     }
 
     public function index(Transaction $transaction)
