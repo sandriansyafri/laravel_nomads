@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GalleryRequest;
 use App\Models\Gallery;
 use App\Models\TravelPackage;
+use GuzzleHttp\RetryMiddleware;
 use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\returnSelf;
 
 class GalleryController extends Controller
 {
@@ -40,12 +43,17 @@ class GalleryController extends Controller
      */
     public function store(GalleryRequest $request)
     {
-        $data = $request->all();
-        $data['image'] = $request->file('image')->store(
-            'assets/galleries',
-            'public'
-        );
-        Gallery::create($data);
+
+        $file = $request->file('image');
+        $name = Str::random(32);
+        $extention = $file->getClientOriginalExtension();
+        $fileName = time() . '-' . $name  . '.' . $extention;
+        $path = public_path('assets/galleries');
+        $file->move($path, $fileName);
+        Gallery::create([
+            'travel_package_id' => $request->travel_package_id,
+            'image' => $fileName
+        ]);
         return redirect()->route('galleries.index')->with('status', 'Galleries created!');
     }
 
@@ -82,12 +90,19 @@ class GalleryController extends Controller
      */
     public function update(GalleryRequest $request, Gallery $gallery)
     {
-        $data = $request->all();
-        $data['image'] = $request->file('image')->store(
-            'assets/galleries/',
-            'public'
-        );
-        $gallery->update($data);
+        $file = $request->file('image');
+        $name = Str::random(32);
+        $extention = $file->getClientOriginalExtension();
+        $fileName = time() . '-' . $name  . '.' . $extention;
+        $path = public_path('assets/galleries');
+        if (!$gallery->image && file_exists($path . '/' . $gallery->image)) {
+            $file->move($path, $fileName);
+        } else {
+            $file->move($path, $fileName);
+            unlink($path . '/' . $gallery->image);
+        }
+
+        $gallery->update(['image' => $fileName]);
         return redirect()->route('galleries.index')->with('status', 'Galleries updated!');
     }
 
@@ -99,6 +114,10 @@ class GalleryController extends Controller
      */
     public function destroy(Gallery $gallery)
     {
+        $path = public_path('assets/galleries');
+        if ($gallery->image) {
+            unlink($path . '/' . $gallery->image);
+        }
         $gallery->delete();
         return redirect()->route('galleries.index')->with('status', 'Galleries deleted!');
     }

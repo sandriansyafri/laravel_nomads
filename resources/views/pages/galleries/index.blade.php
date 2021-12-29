@@ -40,7 +40,7 @@
                               <td>{{ $loop->iteration }}</td>
                               <td >{{ $gallery->travel_package->title }}</td>
                               <td>
-                                <img width="100px" src="{{ Storage::url($gallery->image) }}" alt="">
+                                <img width="100px" src="{{ asset('assets/galleries/' . $gallery->image) }}" alt="">
                               </td>
                               <td>
                                     <a href="{{ route('galleries.edit',$gallery->id) }}" class="btn badge badge-warning">

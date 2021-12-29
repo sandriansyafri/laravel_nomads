@@ -35,11 +35,11 @@
               <div class="gallery">
                 @if ($travel_package->gallery->count())
                 <div class="xzoom-container">
-                  <img class="xzoom" id="xzoom-default" src="{{ Storage::url($travel_package->gallery->first()->image) }}" xoriginal="{{ Storage::url($travel_package->gallery->first()->image) }}" style="width: 100%;">
+                  <img class="xzoom" id="xzoom-default" src="{{ asset('assets/galleries/' . $travel_package->gallery[0]->image) }}" xoriginal="{{ asset('assets/galleries/' . $travel_package->gallery[0]->image) }}" style="width: 100%;">
                   <div class="xzoom-thumbs">
                     @foreach ($travel_package->gallery as $gallery)
-                    <a href="{{ Storage::url($gallery->image) }}">
-                      <img class="xzoom-gallery xactive" width="128" src="{{ Storage::url($gallery->image) }}" xpreview="{{ Storage::url($gallery->image) }}">
+                    <a href="{{ asset('assets/galleries/' . $gallery->image) }}">
+                      <img class="xzoom-gallery xactive" width="128" src="{{ asset('assets/galleries/' . $gallery->image) }}" xpreview="{{ asset('assets/galleries/' . $gallery->image) }}">
                     </a>
                     @endforeach
                   </div>
