@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\TravelPackage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,14 +22,14 @@ class DatabaseSeeder extends Seeder
             'username' => 'sandriansyafri',
             'roles' => 'ADMIN',
             'email' => 'sandriansyafri@gmail.com',
-            'password' => bcrypt('password')
+            'password' => Hash::make('password')
         ]);
         User::create([
-            'name' => 'FIKRI',
-            'username' => 'fikrialgifahri',
+            'name' => 'user1',
+            'username' => 'user1',
             'roles' => 'USER',
-            'email' => 'fikri@gmail.com',
-            'password' => bcrypt('password')
+            'email' => 'user@gmail.com',
+            'password' => Hash::make('password')
         ]);
     }
 }
